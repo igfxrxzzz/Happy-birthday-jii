@@ -4,140 +4,134 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Still Yours 💌</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   body {
     margin:0; padding:0; 
-    background: radial-gradient(circle, #4b1212 0%, #1e1e2f 100%); 
-    color:white; 
-    font-family: 'Poppins', sans-serif; 
+    /* Light Love Theme Background */
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); 
+    color:#4a4a4a; 
+    font-family: Arial, sans-serif; 
     text-align:center; 
     overflow-x:hidden; 
     user-select: none;
     min-height: 100vh;
   }
   .box {margin-top:80px; padding: 20px;}
+  h1, h2 {color: #d63384;}
   
   input {
-    padding: 14px; border-radius: 30px; border: 2px solid #ff4d6d; 
-    outline: none; margin-bottom: 10px; text-align: center; width: 240px; 
-    background: rgba(255,255,255,0.1); color: white; font-size: 16px;
+    padding: 12px; border-radius: 25px; border: 2px solid #ff4d6d; 
+    outline: none; margin-bottom: 10px; text-align: center; width: 220px; 
+    font-size: 16px;
   }
   button {
-    padding: 14px 30px; font-size: 16px; border: none; border-radius: 30px; 
-    background: #ff4d6d; color: white; cursor: pointer; margin: 8px; 
-    font-weight: 600; transition: 0.4s; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+    padding:12px 25px; font-size:16px; border:none; border-radius:25px; 
+    background:#ff4d6d; color:white; cursor:pointer; margin: 8px; 
+    transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
   button:hover {background:#ff1e4d; transform: scale(1.05);}
   
   .hidden {display:none; margin-top:30px;}
   
-  /* Floating Hearts Background */
-  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 77, 109, 0.7); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
+  /* Floating Hearts */
+  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 0, 0, 0.4); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
   .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
   .heart:before {top:-10px; left:0;}
   .heart:after {left:10px; top:0;}
   @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
   
-  #game-balloon { position: absolute; cursor: pointer; font-size: 45px; transition: 0.1s; z-index: 100; display: none; filter: drop-shadow(0 0 15px #ff4d6d); }
+  #game-balloon { position: absolute; cursor: pointer; font-size: 45px; z-index: 100; display: none; }
 
-  /* Envelope & Letter Styling */
-  .envelope-wrapper { position: relative; width: 300px; height: 190px; background: #ff4d6d; margin: 60px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; transition: 0.5s; }
-  .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 110px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
+  /* Envelope & Letter */
+  .envelope-wrapper { position: relative; width: 300px; height: 180px; background: #ff4d6d; margin: 50px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+  .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
   
-  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 170px; background: white; color: #333; padding: 25px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
-  .envelope-wrapper.open .letter { transform: translateY(-140px); height: 260px; }
+  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 160px; background: white; color: #333; padding: 20px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+  .envelope-wrapper.open .letter { transform: translateY(-130px); height: 220px; }
 
-  /* Error/Shake Effect */
   .shake { animation: shake 0.4s; }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
   
-  .confetti { position: fixed; width: 10px; height: 10px; top: -10px; z-index: 10; animation: fall 3.5s linear forwards; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(540deg); } }
+  .confetti { position: fixed; width: 8px; height: 8px; top: -10px; z-index: 10; animation: fall 3s linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
 
-  .restart-btn { background: transparent; border: 2px solid white; margin-top: 30px; font-size: 14px; opacity: 0.8; }
-  .restart-btn:hover { background: white; color: #1e1e2f; opacity: 1; }
+  .restart-btn { background: #6c757d; margin-top: 40px; font-size: 14px; }
 </style>
 </head>
 <body>
 
 <div id="game-balloon">🎈</div>
 
-<div class="box" id="main-content">
+<div class="box">
   <div id="password-screen">
-    <h1 style="color: #ff4d6d; font-size: 2.2rem;">Still Yours? 🔒</h1>
-    <p>Unlock your birthday surprise:</p>
+    <h1>Enter Password 🔒</h1>
     <input type="password" id="passInput" placeholder="Password yahan likho...">
     <br>
-    <button onclick="checkPassword()">Unlock 🔓</button>
-    <p id="error-msg" style="color: #ff4d6d; display: none; font-weight: 600; margin-top: 10px;">Incorrect Code! Try again. 😉</p>
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="error-msg" style="color: red; display: none;">Wrong password! Try again. 😉</p>
   </div>
 
   <div id="quiz-start-screen" class="hidden">
-    <h1 style="font-size: 2rem;">Wishes Loading... ⏳</h1>
-    <p>Complete the tricky quiz to proceed!</p>
-    <button onclick="startQuiz()">Start Quiz</button>
+    <h1>Tap to start your surprise 😌</h1>
+    <button onclick="startQuiz()">Start</button>
   </div>
 
   <div id="question-box" class="hidden">
-    <p id="qtext" style="font-size: 24px; font-weight: 600; min-height: 80px;"></p>
+    <p id="qtext" style="font-size: 22px; font-weight: bold;"></p>
     <div id="options"></div>
-    <p id="quiz-error" style="color: #ff4d6d; display: none; margin-top: 15px; font-weight: bold;">Oops! Wrong Choice. Try again! 🧐</p>
+    <p id="quiz-error" style="color: red; display: none; margin-top: 10px;">Wrong answer! Try the correct one. 🧐</p>
   </div>
 
   <div id="game-intro" class="hidden">
-    <h1>Final Level 🎮</h1>
+    <h1>One last thing! 🎮</h1>
     <p>Catch the birthday balloon 5 times!</p>
-    <h2 id="score-board" style="color: #f2d74e;">Score: 0/5</h2>
-    <button onclick="startGame()">Play Game</button>
+    <h2 id="score-board">Score: 0/5</h2>
+    <button onclick="startGame()">I'm Ready</button>
   </div>
 
   <div id="final-screen" class="hidden">
-    <h1 id="final-title" style="font-size: 2rem; color: #ff4d6d;">Success! 🏆</h1>
-    <p>Tap the envelope to read your letter:</p>
+    <h2 id="final-title">Happy Birthday 🤍</h2>
+    <p>Tap the envelope to see my message...</p>
     
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
-        <h3 style="color: #ff4d6d; margin: 0; font-size: 22px;">Happy Birthday! ✨</h3>
-        <p style="font-size: 14px; line-height: 1.6; color: #444; margin-top: 15px;">
-          My Jigar... <br>
-          Wishing you a year full of joy, success, and beautiful memories. You are truly special!<br><br>
-          <span style="font-size: 18px; color: #ff4d6d; font-weight: 700;">Still Yours... Forever. 🔥</span>
+        <h3 style="color: #ff4d6d; margin: 0;">For You 💌</h3>
+        <p style="font-size: 14px; line-height: 1.5; color: #444;">
+          my jigar… You mean the world to me. I cherish every moment with you. 💖 <br><br>
+          <b>Still yours… forever. 🔥🔥🔥</b>
         </p>
       </div>
     </div>
     <br>
-    <button class="restart-btn" onclick="location.reload()">↺ Start Again</button>
+    <button class="restart-btn" onclick="location.reload()">Restart ↺</button>
   </div>
 </div>
 
 <audio id="bgmusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// Quiz Data with Correct Answers
+// Original Questions + Added Wrong Options
 let quizData = [
-  { q: "Guess who sent this surprise? 😏", options: ["A Ghost 👻", "Someone Random", "Only Me", "Wrong Person"], answer: "Only Me" },
-  { q: "Is today just a normal day? 🌟", options: ["Yes, Normal", "Maybe", "No, It's My Birthday!", "I forgot"], answer: "No, It's My Birthday!" },
-  { q: "Are you ready for the final surprise? ✨", options: ["Not Yet", "I'm Scared", "YES, 100%!", "Maybe Later"], answer: "YES, 100%!" }
+  { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours", "A Stranger 👻"], answer: "Forever yours" },
+  { q: "How much do you miss me right now? 💖", options: ["A lot", "Just a little", "Can't wait to see you", "Forever", "Not at all 😜"], answer: "A lot" },
+  { q: "Ready for a big hug in your heart? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], answer: "Yes!" }
 ];
 let index = 0;
 let gameScore = 0;
 
 function checkPassword() {
   const pass = document.getElementById('passInput').value.toLowerCase().trim();
-  const screen = document.getElementById('password-screen');
   if(pass === "still yours") {
-    screen.style.display = 'none';
+    document.getElementById('password-screen').style.display = 'none';
     document.getElementById('quiz-start-screen').classList.remove('hidden');
-    // Start Love Theme Song
     document.getElementById('bgmusic').play();
   } else {
-    screen.classList.add('shake');
+    document.getElementById('password-screen').classList.add('shake');
     document.getElementById('error-msg').style.display = 'block';
-    setTimeout(() => screen.classList.remove('shake'), 400);
+    setTimeout(() => document.getElementById('password-screen').classList.remove('shake'), 400);
   }
 }
 
@@ -166,7 +160,6 @@ function showQuestion(){
                 document.getElementById('game-intro').classList.remove('hidden');
             }
         } else {
-            // Shake effect for wrong answers
             document.getElementById('question-box').classList.add('shake');
             document.getElementById('quiz-error').style.display = 'block';
             setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 400);
@@ -204,7 +197,6 @@ function openEnvelope() {
     const env = document.getElementById('envelope');
     if(!env.classList.contains('open')) {
         env.classList.add('open');
-        document.getElementById('final-title').innerText = "Special Wishes For You! 🎂";
         createConfetti();
     }
 }
@@ -216,16 +208,15 @@ function createConfetti() {
       c.className = 'confetti';
       c.style.left = Math.random() * 100 + 'vw';
       c.style.backgroundColor = ['#ff4d6d','#f2d74e','#ffffff','#ff758c'][Math.floor(Math.random()*4)];
-      c.style.width = (Math.random() * 10 + 5) + 'px';
+      c.style.width = (Math.random() * 8 + 4) + 'px';
       c.style.height = c.style.width;
       c.style.borderRadius = "50%";
       document.body.appendChild(c);
-      setTimeout(() => c.remove(), 3500);
+      setTimeout(() => c.remove(), 3000);
     }, i * 20);
   }
 }
 
-// Background Heart Animation
 setInterval(()=>{
   let h = document.createElement('div');
   h.className='heart';
@@ -235,8 +226,7 @@ setInterval(()=>{
   setTimeout(()=>h.remove(),4000);
 },500);
 
-let music = document.getElementById('bgmusic');
-music.volume = 0.5;
+document.getElementById('bgmusic').volume = 0.4;
 </script>
 
 </body>
