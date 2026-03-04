@@ -8,135 +8,134 @@
 <style>
   body {
     margin:0; padding:0; 
-    background: linear-gradient(135deg,#1e1e2f 0%,#2b2b45 100%); 
+    background: radial-gradient(circle, #4b1212 0%, #1e1e2f 100%); 
     color:white; 
     font-family: 'Poppins', sans-serif; 
     text-align:center; 
     overflow-x:hidden; 
     user-select: none;
+    min-height: 100vh;
   }
   .box {margin-top:80px; padding: 20px;}
   
-  /* Input & Button Styling */
   input {
     padding: 14px; border-radius: 30px; border: 2px solid #ff4d6d; 
     outline: none; margin-bottom: 10px; text-align: center; width: 240px; 
     background: rgba(255,255,255,0.1); color: white; font-size: 16px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
   button {
     padding:14px 30px; font-size:16px; border:none; border-radius:30px; 
-    background:#ff4d6d; color:white; cursor:pointer; margin: 10px; 
+    background:#ff4d6d; color:white; cursor:pointer; margin: 8px; 
     font-weight: 600; transition: 0.4s; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
   }
-  button:hover {background:#ff1e4d; transform: translateY(-3px) scale(1.05);}
+  button:hover {background:#ff1e4d; transform: scale(1.05);}
   
   .hidden {display:none; margin-top:30px;}
   
-  /* Heart Background */
-  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 77, 109, 0.5); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
+  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 77, 109, 0.7); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
   .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
   .heart:before {top:-10px; left:0;}
   .heart:after {left:10px; top:0;}
   @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
   
-  /* Catch Balloon Game Piece */
   #game-balloon { position: absolute; cursor: pointer; font-size: 45px; transition: 0.1s; z-index: 100; display: none; filter: drop-shadow(0 0 15px #ff4d6d); }
 
-  /* Envelope & Letter Magic */
   .envelope-wrapper { position: relative; width: 300px; height: 190px; background: #ff4d6d; margin: 60px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; transition: 0.5s; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 110px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
   
   .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 170px; background: white; color: #333; padding: 25px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
-  .envelope-wrapper.open .letter { transform: translateY(-140px); height: 250px; }
+  .envelope-wrapper.open .letter { transform: translateY(-140px); height: 260px; }
 
-  /* Error Animation */
   .shake { animation: shake 0.4s; }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+  
   .confetti { position: fixed; width: 10px; height: 10px; top: -10px; z-index: 10; animation: fall 3.5s linear forwards; }
   @keyframes fall { to { transform: translateY(100vh) rotate(540deg); } }
+
+  .restart-btn { background: transparent; border: 2px solid white; margin-top: 50px; font-size: 14px; opacity: 0.7; }
+  .restart-btn:hover { background: white; color: black; opacity: 1; }
 </style>
 </head>
 <body>
 
 <div id="game-balloon">🎈</div>
 
-<div class="box">
+<div class="box" id="main-content">
   <div id="password-screen">
-    <h1 style="color: #ff4d6d; font-size: 2.2rem; font-weight: 700;">Secure Login 🔐</h1>
-    <p style="margin-bottom: 25px;">Enter the code to unlock your birthday gift:</p>
-    <input type="password" id="passInput" placeholder="Type password here...">
+    <h1 style="color: #ff4d6d; font-size: 2.2rem;">Still Yours? 🔒</h1>
+    <p>Please enter the secret code to proceed:</p>
+    <input type="password" id="passInput" placeholder="Password...">
     <br>
-    <button onclick="checkPassword()">Unlock Now 🔓</button>
-    <p id="error-msg" style="color: #ff4d6d; display: none; font-weight: 600; margin-top: 15px;">Wrong password! Socho thoda... 😉</p>
+    <button onclick="checkPassword()">Unlock 🔓</button>
+    <p id="error-msg" style="color: #ff4d6d; display: none; font-weight: 600;">Incorrect! Try again. 😉</p>
   </div>
 
   <div id="quiz-start-screen" class="hidden">
-    <h1 style="font-size: 2rem;">Something special is waiting... 😌</h1>
-    <p>Pehle ek chota sa quiz complete karein?</p>
-    <button onclick="startQuiz()">Let's Start!</button>
+    <h1 style="font-size: 2rem;">Wishes Loading... ⏳</h1>
+    <p>Complete the quiz with correct answers to unlock!</p>
+    <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
   <div id="question-box" class="hidden">
-    <p id="qtext" style="font-size: 26px; font-weight: 600; margin-bottom: 25px;"></p>
+    <p id="qtext" style="font-size: 24px; font-weight: 600; min-height: 80px;"></p>
     <div id="options"></div>
+    <p id="quiz-error" style="color: #ff4d6d; display: none; margin-top: 10px;">Wrong Choice! Think again. 🧐</p>
   </div>
 
   <div id="game-intro" class="hidden">
-    <h1 style="color: #ff4d6d;">Wait! Level Up 🎮</h1>
-    <p>Final surprise se pehle, 5 birthday balloons catch karein!</p>
+    <h1>Final Barrier 🎮</h1>
+    <p>Catch the birthday balloon 5 times!</p>
     <h2 id="score-board" style="color: #f2d74e;">Score: 0/5</h2>
     <button onclick="startGame()">I'm Ready</button>
   </div>
 
   <div id="final-screen" class="hidden">
-    <h1 id="final-title" style="font-size: 2rem; color: #ff4d6d;">Congratulations! 🎂</h1>
-    <p>Tap the envelope to read your wishes...</p>
+    <h1 id="final-title" style="font-size: 2rem; color: #ff4d6d;">Success! 🏆</h1>
+    <p>Open your birthday letter below:</p>
     
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
-        <h3 style="color: #ff4d6d; margin: 0; font-size: 24px; font-weight: 700;">Happy Birthday! ✨</h3>
-        <p style="font-size: 15px; line-height: 1.6; color: #444; margin-top: 20px;">
+        <h3 style="color: #ff4d6d; margin: 0; font-size: 22px;">Happy Birthday! ✨</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: #444; margin-top: 15px;">
           My Jigar... <br>
-          May your year be filled with success, laughter, and everything you wish for. Stay blessed always! <br><br>
+          Wishing you a year full of joy, success, and beautiful memories. You are truly special!<br><br>
           <span style="font-size: 18px; color: #ff4d6d; font-weight: 700;">Still Yours... Forever. 🔥</span>
         </p>
       </div>
     </div>
+    <br>
+    <button class="restart-btn" onclick="location.reload()">↺ Start Again</button>
   </div>
 </div>
 
 <audio id="bgmusic" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// Configuration
 let quizData = [
-  { q: "Guess who is sending you this? 😏", options: ["A Special Person", "Your Best Friend", "Only Me", "Forever Yours"] },
-  { q: "How excited are you for today? 🌟", options: ["Very Much!", "Super Happy", "Can't Wait", "100% Excited"] },
-  { q: "Ready to see the magic? ✨", options: ["YES!", "Bring It!", "Absolutely", "Right Now!"] }
+  { q: "Guess who sent this? 😏", options: ["A Ghost 👻", "Someone Random", "Only Me", "Wrong Person"], answer: "Only Me" },
+  { q: "Is today a special day? 🌟", options: ["No", "Maybe", "Yes, Birthday!", "Just Monday"], answer: "Yes, Birthday!" },
+  { q: "Ready for the gift? ✨", options: ["Not Yet", "No", "Always Ready!", "Wait.."], answer: "Always Ready!" }
 ];
 let index = 0;
 let gameScore = 0;
 
-// Logic 1: Password Check
 function checkPassword() {
   const pass = document.getElementById('passInput').value.toLowerCase().trim();
-  const screen = document.getElementById('password-screen');
   if(pass === "still yours") {
-    screen.style.display = 'none';
+    document.getElementById('password-screen').style.display = 'none';
     document.getElementById('quiz-start-screen').classList.remove('hidden');
+    // Start Love Theme Music
     document.getElementById('bgmusic').play();
   } else {
-    screen.classList.add('shake');
+    document.getElementById('password-screen').classList.add('shake');
     document.getElementById('error-msg').style.display = 'block';
-    setTimeout(() => screen.classList.remove('shake'), 400);
+    setTimeout(() => document.getElementById('password-screen').classList.remove('shake'), 400);
   }
 }
 
-// Logic 2: Quiz Flow
 function startQuiz() {
   document.getElementById('quiz-start-screen').style.display = 'none';
   document.getElementById('question-box').classList.remove('hidden');
@@ -148,22 +147,29 @@ function showQuestion(){
   document.getElementById('qtext').innerText = q.q;
   let optsDiv = document.getElementById('options');
   optsDiv.innerHTML = "";
+  document.getElementById('quiz-error').style.display = 'none';
+
   q.options.forEach(opt => {
     let btn = document.createElement('button');
     btn.innerText = opt;
     btn.onclick = () => {
-        index++;
-        if(index < quizData.length) { showQuestion(); } 
-        else { 
-            document.getElementById('question-box').style.display = 'none';
-            document.getElementById('game-intro').classList.remove('hidden');
+        if(opt === q.answer) {
+            index++;
+            if(index < quizData.length) { showQuestion(); } 
+            else { 
+                document.getElementById('question-box').style.display = 'none';
+                document.getElementById('game-intro').classList.remove('hidden');
+            }
+        } else {
+            document.getElementById('question-box').classList.add('shake');
+            document.getElementById('quiz-error').style.display = 'block';
+            setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 400);
         }
     };
     optsDiv.appendChild(btn);
   });
 }
 
-// Logic 3: Game Mechanics
 function startGame() {
     document.getElementById('game-intro').querySelector('button').style.display = 'none';
     const ball = document.getElementById('game-balloon');
@@ -188,14 +194,14 @@ document.getElementById('game-balloon').onclick = function() {
     }
 };
 
-// Logic 4: Envelope & Confetti
 function openEnvelope() {
     const env = document.getElementById('envelope');
     if(!env.classList.contains('open')) {
         env.classList.add('open');
-        document.getElementById('final-title').innerText = "Wishes For You! 🎈";
+        document.getElementById('final-title').innerText = "Wishes Just For You! 🎂";
         createConfetti();
-        document.getElementById('bgmusic').volume = 0.8;
+        // Slightly increase volume for final reveal
+        document.getElementById('bgmusic').volume = 0.9;
     }
 }
 
@@ -205,7 +211,7 @@ function createConfetti() {
       let c = document.createElement('div');
       c.className = 'confetti';
       c.style.left = Math.random() * 100 + 'vw';
-      c.style.backgroundColor = ['#ff4d6d','#f2d74e','#ffffff','#00d2ff','#ff758c'][Math.floor(Math.random()*5)];
+      c.style.backgroundColor = ['#ff4d6d','#f2d74e','#ffffff','#ff758c'][Math.floor(Math.random()*4)];
       c.style.width = (Math.random() * 10 + 5) + 'px';
       c.style.height = c.style.width;
       c.style.borderRadius = "50%";
@@ -215,7 +221,6 @@ function createConfetti() {
   }
 }
 
-// Global Background Hearts
 setInterval(()=>{
   let h = document.createElement('div');
   h.className='heart';
@@ -224,6 +229,9 @@ setInterval(()=>{
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),4000);
 },500);
+
+let music = document.getElementById('bgmusic');
+music.volume = 0.5;
 </script>
 
 </body>
