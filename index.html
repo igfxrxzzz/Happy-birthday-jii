@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Still Yours 💌</title>
+<style>
+  body {
+    margin:0; padding:0; 
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); 
+    color:#4a4a4a; 
+    font-family: Arial, sans-serif; 
+    text-align:center; 
+    overflow-x:hidden; 
+    user-select: none;
+    min-height: 100vh;
+  }
+  .box {margin-top:80px; padding: 20px;}
+  h1, h2 {color: #d63384;}
+  
+  input {
+    padding: 12px; border-radius: 25px; border: 2px solid #ff4d6d; 
+    outline: none; margin-bottom: 10px; text-align: center; width: 220px; 
+    font-size: 16px;
+  }
+  button {
+    padding:12px 25px; font-size:16px; border:none; border-radius:25px; 
+    background:#ff4d6d; color:white; cursor:pointer; margin: 8px; 
+    transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  button:hover {background:#ff1e4d; transform: scale(1.05);}
+  
+  .hidden {display:none; margin-top:30px;}
+  
+  /* Floating Hearts Background */
+  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 0, 0, 0.4); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
+  .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
+  .heart:before {top:-10px; left:0;}
+  .heart:after {left:10px; top:0;}
+  @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
+  
+  /* Dropping Balloon Animation */
+  .dropping-balloon { position: absolute; cursor: pointer; font-size: 50px; z-index: 999; animation: drop 4s linear forwards; pointer-events: auto; }
+  @keyframes drop {
+    0% { transform: translateY(-100px); opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 1; }
+  }
+
+  /* Memory Game Style (12 Cards) */
+  .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 320px; margin: 20px auto; }
+  .card { width: 90px; height: 90px; background: #ff4d6d; color: #ff4d6d; display: flex; align-items: center; justify-content: center; font-size: 35px; border-radius: 15px; cursor: pointer; transition: 0.3s; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .card.flipped { background: white; color: black; transform: rotateY(180deg); }
+
+  /* Maze Game Style */
+  #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 5px solid #ff4d6d; touch-action: none; border-radius: 10px; overflow: hidden; }
+  .maze-wall { position: absolute; background: #ff4d6d; }
+  #player { position: absolute; width: 30px; height: 30px; background: #d63384; border-radius: 50%; top: 5px; left: 5px; z-index: 10; cursor: grab; }
+  #goal { position: absolute; width: 35px; height: 35px; bottom: 5px; right: 5px; font-size: 30px; }
+
+  /* Envelope & Letter */
+  .envelope-wrapper { position: relative; width: 300px; height: 180px; background: #ff4d6d; margin: 50px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+  .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
+  .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
+  
+  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 160px; background: white; color: #333; padding: 20px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+  .envelope-wrapper.open .letter { transform: translateY(-130px); height: 220px; }
+
+  .shake { animation: shake 0.4s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+  
+  .confetti { position: fixed; width: 8px; height: 8px; top: -10px; z-index: 10; animation: fall 3s linear forwards; border-radius: 50%; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+
+  .restart-btn { background: #6c757d; margin-top: 40px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div id="password-screen">
+    <h1>Enter Password 🔒</h1>
+    <input type="password" id="passInput" placeholder="Password yahan likho...">
+    <br>
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="error-msg" style="color: red; display: none;">Wrong password! Try again. 😉</p>
+  </div>
+
+  <div id="quiz-start-screen" class="hidden">
+    <h1>Tap to start your surprise 😌</h1>
+    <button onclick="startQuiz()">Start</button>
+  </div>
+
+  <div id="question-box" class="hidden">
+    <p id="qtext" style="font-size: 22px; font-weight: bold;"></p>
+    <div id="options"></div>
+    <p id="quiz-error" style="color: red; display: none; margin-top: 10px;">Wrong answer! Try again. 🧐</p>
+  </div>
+
+  <div id="game-intro" class="hidden">
+    <h1>Mission 1: Catch 5 Balloons! 🎈</h1>
+    <h2 id="score-board">Score: 0/5</h2>
+    <button id="catch-start-btn" onclick="startGame()">Start Catching</button>
+  </div>
+
+  <div id="game-memory" class="hidden">
+    <h1>Mission 2: Memory Match! 🧩</h1>
+    <p>Find all 6 pairs (12 cards)</p>
+    <div class="memory-grid" id="memory-grid"></div>
+  </div>
+
+  <div id="game-maze" class="hidden">
+    <h1>Mission 3: Maze Run! 🎂</h1>
+    <p>Drag the dot to the cake!</p>
+    <div id="maze-container">
+        <div id="player"></div>
+        <div id="goal">🎂</div>
+        <div class="maze-wall" style="top:70px; left:0; width:220px; height:12px;"></div>
+        <div class="maze-wall" style="top:150px; right:0; width:220px; height:12px;"></div>
+        <div class="maze-wall" style="top:230px; left:0; width:220px; height:12px;"></div>
+    </div>
+  </div>
+
+  <div id="final-screen" class="hidden">
+    <h2 id="final-title">Happy Birthday 🤍</h2>
+    <p>Tap the envelope to see my message...</p>
+    
+    <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+      <div class="letter">
+        <h3 style="color: #ff4d6d; margin: 0;">For You 💌</h3>
+        <p style="font-size: 14px; line-height: 1.5; color: #444;">
+          my jigar… You mean the world to me. I cherish every moment with you. 💖 <br><br>
+          <b>Still yours… forever. 🔥🔥🔥</b>
+        </p>
+      </div>
+    </div>
+    <br>
+    <button class="restart-btn" onclick="location.reload()">Restart ↺</button>
+  </div>
+</div>
+
+<audio id="bgmusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ORIGINAL QUIZ DATA & LOGIC (UNCHANGED)
+let quizData = [
+  { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours", "A Stranger 👻"], answer: "Forever yours" },
+  { q: "How much do you miss me right now? 💖", options: ["A lot", "Just a little", "Can't wait to see you", "Forever", "Not at all 😜"], answer: "A lot" },
+  { q: "Ready for a big hug in your heart? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], answer: "Yes!" }
+];
+let index = 0;
+let gameScore = 0;
+let gameActive = false;
+
+function checkPassword() {
+  const pass = document.getElementById('passInput').value.toLowerCase().trim();
+  if(pass === "still yours") {
+    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('quiz-start-screen').classList.remove('hidden');
+    document.getElementById('bgmusic').play();
+  } else {
+    document.getElementById('password-screen').classList.add('shake');
+    document.getElementById('error-msg').style.display = 'block';
+    setTimeout(() => document.getElementById('password-screen').classList.remove('shake'), 400);
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-start-screen').style.display = 'none';
+  document.getElementById('question-box').classList.remove('hidden');
+  showQuestion();
+}
+
+function showQuestion(){
+  let q = quizData[index];
+  document.getElementById('qtext').innerText = q.q;
+  let optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = "";
+  document.getElementById('quiz-error').style.display = 'none';
+
+  q.options.forEach(opt => {
+    let btn = document.createElement('button');
+    btn.innerText = opt;
+    btn.onclick = () => {
+        if(opt === q.answer) {
+            index++;
+            if(index < quizData.length) { showQuestion(); } 
+            else { 
+                document.getElementById('question-box').style.display = 'none';
+                document.getElementById('game-intro').classList.remove('hidden');
+            }
+        } else {
+            document.getElementById('question-box').classList.add('shake');
+            document.getElementById('quiz-error').style.display = 'block';
+            setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 400);
+        }
+    };
+    optsDiv.appendChild(btn);
+  });
+}
+
+// GAME 1: BALLOONS (FIXED TOUCH)
+function startGame() {
+    document.getElementById('catch-start-btn').style.display = 'none';
+    gameActive = true;
+    spawnBalloon();
+}
+
+function spawnBalloon() {
+    if(!gameActive) return;
+    const balloon = document.createElement('div');
+    balloon.className = 'dropping-balloon';
+    balloon.innerText = ['🎈', '💖', '🎁', '🎂'][Math.floor(Math.random()*4)];
+    balloon.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+    
+    const catchFunc = (e) => {
+        e.preventDefault();
+        gameScore++;
+        document.getElementById('score-board').innerText = `Score: ${gameScore}/5`;
+        balloon.remove();
+        if(gameScore >= 5) {
+            gameActive = false;
+            document.getElementById('game-intro').style.display = 'none';
+            initMemory();
+        } else { spawnBalloon(); }
+    };
+    balloon.onmousedown = balloon.ontouchstart = catchFunc;
+    document.body.appendChild(balloon);
+    setTimeout(() => { if(balloon.parentNode) { balloon.remove(); if(gameActive) spawnBalloon(); } }, 4000);
+}
+
+// GAME 2: MEMORY MATCH (12 CARDS)
+let cardsArray = ['💖','💖','🎁','🎁','🎂','🎂','💎','💎','🌹','🌹','⭐','⭐'];
+let flippedCards = [];
+let matchedCount = 0;
+
+function initMemory() {
+    document.getElementById('game-memory').classList.remove('hidden');
+    const grid = document.getElementById('memory-grid');
+    cardsArray.sort(() => Math.random() - 0.5);
+    cardsArray.forEach(emoji => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.emoji = emoji;
+        card.innerText = '?';
+        card.onclick = () => {
+            if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                card.classList.add('flipped');
+                card.innerText = emoji;
+                flippedCards.push(card);
+                if(flippedCards.length === 2) {
+                    setTimeout(checkMatch, 600);
+                }
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function checkMatch() {
+    if(flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
+        matchedCount++;
+        if(matchedCount === 6) {
+            document.getElementById('game-memory').style.display = 'none';
+            initMaze();
+        }
+    } else {
+        flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = '?'; });
+    }
+    flippedCards = [];
+}
+
+// GAME 3: MAZE
+function initMaze() {
+    document.getElementById('game-maze').classList.remove('hidden');
+    const player = document.getElementById('player');
+    const maze = document.getElementById('maze-container');
+    const goal = document.getElementById('goal');
+    
+    const move = (e) => {
+        let cx = e.touches ? e.touches[0].clientX : e.clientX;
+        let cy = e.touches ? e.touches[0].clientY : e.clientY;
+        let r = maze.getBoundingClientRect();
+        let x = cx - r.left - 15;
+        let y = cy - r.top - 15;
+        
+        if(x > 0 && x < 270 && y > 0 && y < 270) {
+            player.style.left = x + 'px';
+            player.style.top = y + 'px';
+            let pr = player.getBoundingClientRect(), gr = goal.getBoundingClientRect();
+            if(!(pr.right < gr.left || pr.left > gr.right || pr.bottom < gr.top || pr.top > gr.bottom)) {
+                document.getElementById('game-maze').style.display = 'none';
+                document.getElementById('final-screen').classList.remove('hidden');
+                maze.removeEventListener('mousemove', move);
+                maze.removeEventListener('touchmove', move);
+            }
+        }
+    };
+    player.onmousedown = player.ontouchstart = (e) => {
+        e.preventDefault();
+        maze.addEventListener('mousemove', move);
+        maze.addEventListener('touchmove', move);
+    };
+    window.onmouseup = window.ontouchend = () => {
+        maze.removeEventListener('mousemove', move);
+        maze.removeEventListener('touchmove', move);
+    };
+}
+
+function openEnvelope() {
+    const env = document.getElementById('envelope');
+    if(!env.classList.contains('open')) {
+        env.classList.add('open');
+        createConfetti();
+    }
+}
+
+function createConfetti() {
+  for(let i=0; i<80; i++) {
+    setTimeout(() => {
+      let c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.backgroundColor = ['#ff4d6d','#f2d74e','#ffffff','#ff758c'][Math.floor(Math.random()*4)];
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3000);
+    }, i * 20);
+  }
+}
+
+setInterval(()=>{
+  let h = document.createElement('div');
+  h.className='heart';
+  h.style.left = Math.random()*window.innerWidth+'px';
+  h.style.bottom = "-20px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+},600);
+
+document.getElementById('bgmusic').volume = 0.5;
+</script>
+
+</body>
+</html>
