@@ -8,60 +8,66 @@
   body {
     margin:0; padding:0; 
     background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); 
-    color:#4a4a4a; 
-    font-family: Arial, sans-serif; 
-    text-align:center; 
-    overflow-x:hidden; 
-    user-select: none;
-    min-height: 100vh;
+    color:#4a4a4a; font-family: 'Segoe UI', Arial, sans-serif; 
+    text-align:center; overflow-x:hidden; user-select: none; min-height: 100vh;
   }
   .box {margin-top:50px; padding: 20px;}
-  h1, h2 {color: #d63384;}
+  h1, h2 {color: #d63384; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);}
   
   input {
     padding: 12px; border-radius: 25px; border: 2px solid #ff4d6d; 
-    outline: none; margin-bottom: 10px; text-align: center; width: 220px; 
-    font-size: 16px;
+    outline: none; margin-bottom: 10px; text-align: center; width: 220px; font-size: 16px;
   }
   button {
     padding:12px 25px; font-size:16px; border:none; border-radius:25px; 
     background:#ff4d6d; color:white; cursor:pointer; margin: 8px; 
-    transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
   button:hover {background:#ff1e4d; transform: scale(1.05);}
   .hidden {display:none; margin-top:30px;}
 
-  /* Catch the Heart Game Styles */
-  #game-catch-container { position: relative; width: 100%; height: 400px; background: rgba(255,255,255,0.2); border-radius: 15px; overflow: hidden; margin-top: 20px; touch-action: none; border: 2px dashed #ff4d6d; }
-  #basket { position: absolute; bottom: 10px; left: 50%; width: 70px; height: 50px; font-size: 40px; transform: translateX(-50%); z-index: 10; cursor: grab; }
-  .falling-heart { position: absolute; font-size: 30px; z-index: 5; }
+  /* 1. Catch the Heart - Fast & Smooth */
+  #game-catch-container { 
+    position: relative; width: 100%; height: 450px; 
+    background: rgba(255, 255, 255, 0.3); border-radius: 20px; 
+    overflow: hidden; margin-top: 20px; touch-action: none; 
+    border: 3px solid #fff; box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+  }
+  #basket { position: absolute; bottom: 15px; left: 50%; font-size: 50px; transform: translateX(-50%); z-index: 10; cursor: grab; transition: left 0.1s linear; }
+  .falling-heart { position: absolute; font-size: 35px; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
-  /* Memory Match Style */
-  .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 320px; margin: 20px auto; }
-  .card { width: 90px; height: 90px; background: #ff4d6d; color: #ff4d6d; display: flex; align-items: center; justify-content: center; font-size: 35px; border-radius: 15px; cursor: pointer; border: 2px solid white; }
-  .card.flipped { background: white; color: black; transform: rotateY(180deg); }
+  /* 2. Memory Match - Premium 3D Flip & Texture */
+  .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 340px; margin: 20px auto; perspective: 1000px; }
+  .card { 
+    width: 100px; height: 100px; cursor: pointer; position: relative; 
+    transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 15px;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-front, .card-back {
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+    display: flex; align-items: center; justify-content: center; border-radius: 15px; border: 2px solid #fff;
+  }
+  .card-front { background: linear-gradient(45deg, #ff4d6d, #ff758c); color: white; font-size: 40px; }
+  .card-back { background: #fff; color: #333; font-size: 40px; transform: rotateY(180deg); }
 
-  /* Maze Style */
-  #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 5px solid #ff4d6d; touch-action: none; border-radius: 10px; }
-  .maze-wall { position: absolute; background: #ff4d6d; }
-  #player { position: absolute; width: 30px; height: 30px; background: #d63384; border-radius: 50%; top: 5px; left: 5px; z-index: 10; }
-  #goal { position: absolute; bottom: 5px; right: 5px; font-size: 30px; }
+  /* 3. Maze Style */
+  #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 5px solid #ff4d6d; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+  .maze-wall { position: absolute; background: #ff4d6d; border-radius: 5px; }
+  #player { position: absolute; width: 30px; height: 30px; background: #d63384; border-radius: 50%; top: 5px; left: 5px; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
 
-  /* Envelope */
-  .envelope-wrapper { position: relative; width: 300px; height: 180px; background: #ff4d6d; margin: 50px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+  /* Envelope & Global */
+  .envelope-wrapper { position: relative; width: 300px; height: 180px; background: #ff4d6d; margin: 50px auto; cursor: pointer; border-radius: 0 0 10px 10px; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
-  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 160px; background: white; color: #333; padding: 20px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 5px; }
+  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 160px; background: white; padding: 20px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
   .envelope-wrapper.open .letter { transform: translateY(-130px); height: 220px; }
 
-  /* Animations */
-  .heart {position:absolute; width:20px; height:20px; background:rgba(255, 0, 0, 0.4); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
-  .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
-  .heart:before {top:-10px; left:0;}
-  .heart:after {left:10px; top:0;}
-  @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
-  .shake { animation: shake 0.4s; }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+  .heart-bg {position:absolute; width:20px; height:20px; background:rgba(255, 0, 0, 0.3); transform:rotate(45deg); animation: floatBg 4s linear infinite; z-index: -1;}
+  .heart-bg:after, .heart-bg:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
+  .heart-bg:before {top:-10px; left:0;}
+  .heart-bg:after {left:10px; top:0;}
+  @keyframes floatBg {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
 </style>
 </head>
 <body>
@@ -77,32 +83,28 @@
   <div id="question-box" class="hidden">
     <p id="qtext" style="font-size: 22px; font-weight: bold;"></p>
     <div id="options"></div>
-    <p id="quiz-error" style="color: red; display: none; margin-top: 10px;">Wrong answer! Try again. 🧐</p>
   </div>
 
   <div id="game-catch" class="hidden">
-    <h1>Mission 1: Catch 10 Hearts! 🧺</h1>
+    <h1>Mission 1: Catch 10 Hearts! ❤️</h1>
     <h2 id="catch-score">Score: 0/10</h2>
     <div id="game-catch-container">
         <div id="basket">🧺</div>
     </div>
-    <p>Move the basket to catch falling hearts!</p>
   </div>
 
   <div id="game-memory" class="hidden">
     <h1>Mission 2: Memory Match! 🧩</h1>
-    <p>Find all 6 pairs (12 cards)</p>
     <div class="memory-grid" id="memory-grid"></div>
   </div>
 
   <div id="game-maze" class="hidden">
-    <h1>Final Mission: Maze Run! 🎂</h1>
+    <h1>Mission 3: Reach the Cake! 🎂</h1>
     <div id="maze-container">
         <div id="player"></div>
-        <div id="goal">🎂</div>
+        <div id="goal" style="position:absolute; bottom:5px; right:5px; font-size:30px;">🎂</div>
         <div class="maze-wall" style="top:70px; left:0; width:220px; height:12px;"></div>
-        <div class="maze-wall" style="top:150px; right:0; width:220px; height:12px;"></div>
-        <div class="maze-wall" style="top:230px; left:0; width:220px; height:12px;"></div>
+        <div class="maze-wall" style="top:160px; right:0; width:220px; height:12px;"></div>
     </div>
   </div>
 
@@ -111,151 +113,135 @@
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
         <h3 style="color: #ff4d6d; margin: 0;">For You 💌</h3>
-        <p style="font-size: 14px; line-height: 1.5; color: #444;">
-          my jigar… You mean the world to me. I cherish every moment with you. 💖 <br><br>
-          <b>Still yours… forever. 🔥🔥🔥</b>
-        </p>
+        <p style="font-size: 15px; color: #444;">my jigar… You mean the world to me. <br><br><b>Still yours… forever. 🔥</b></p>
       </div>
     </div>
-    <br><button onclick="location.reload()" style="background:#6c757d;">Restart ↺</button>
   </div>
 </div>
 
-<audio id="bgmusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg"></audio>
+<audio id="bgmusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
 
 <script>
 let quizData = [
   { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours", "A Stranger 👻"], answer: "Forever yours" },
   { q: "How much do you miss me right now? 💖", options: ["A lot", "Just a little", "Can't wait to see you", "Forever", "Not at all 😜"], answer: "A lot" },
-  { q: "Ready for a big hug in your heart? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], answer: "Yes!" }
+  { q: "Ready for a big hug? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], answer: "Yes!" }
 ];
-let index = 0;
+let qIdx = 0;
 
 function checkPassword() {
   if(document.getElementById('passInput').value.toLowerCase().trim() === "still yours") {
-    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('password-screen').style.display='none';
     document.getElementById('question-box').classList.remove('hidden');
     document.getElementById('bgmusic').play();
     showQuestion();
-  } else {
-    document.getElementById('error-msg').style.display = 'block';
-  }
+  } else { document.getElementById('error-msg').style.display='block'; }
 }
 
 function showQuestion(){
-  let q = quizData[index];
+  let q = quizData[qIdx];
   document.getElementById('qtext').innerText = q.q;
-  let optsDiv = document.getElementById('options'); optsDiv.innerHTML = "";
+  let opts = document.getElementById('options'); opts.innerHTML = "";
   q.options.forEach(opt => {
-    let btn = document.createElement('button');
-    btn.innerText = opt;
+    let btn = document.createElement('button'); btn.innerText = opt;
     btn.onclick = () => {
-        if(opt === q.answer) {
-            index++;
-            if(index < quizData.length) showQuestion();
-            else { document.getElementById('question-box').style.display = 'none'; startCatchGame(); }
-        } else { document.getElementById('quiz-error').style.display = 'block'; }
+      if(opt === q.answer) { qIdx++; if(qIdx<3) showQuestion(); else { document.getElementById('question-box').style.display='none'; startCatch(); } }
     };
-    optsDiv.appendChild(btn);
+    opts.appendChild(btn);
   });
 }
 
-// CATCH THE HEART GAME
-let catchScore = 0;
-let catchActive = false;
-function startCatchGame() {
-    document.getElementById('game-catch').classList.remove('hidden');
-    catchActive = true;
-    const basket = document.getElementById('basket');
-    const container = document.getElementById('game-catch-container');
-    
-    // Basket Movement
-    const moveBasket = (e) => {
-        let x = (e.touches ? e.touches[0].clientX : e.clientX) - container.getBoundingClientRect().left;
-        if(x > 35 && x < container.clientWidth - 35) basket.style.left = x + 'px';
-    };
-    container.addEventListener('mousemove', moveBasket);
-    container.addEventListener('touchmove', moveBasket);
+// 1. CATCH HEARTS - FAST ANIMATION
+let cScore = 0; let cActive = false;
+function startCatch() {
+  document.getElementById('game-catch').classList.remove('hidden');
+  cActive = true;
+  const basket = document.getElementById('basket');
+  const container = document.getElementById('game-catch-container');
+  
+  const move = (e) => {
+    let rect = container.getBoundingClientRect();
+    let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    if(x > 30 && x < container.clientWidth - 30) basket.style.left = x + 'px';
+  };
+  container.addEventListener('mousemove', move);
+  container.addEventListener('touchmove', move);
 
-    // Drop Hearts
-    let heartInterval = setInterval(() => {
-        if(!catchActive) { clearInterval(heartInterval); return; }
-        const h = document.createElement('div');
-        h.className = 'falling-heart';
-        h.innerText = ['💖', '❤️', '💝', '🌸'][Math.floor(Math.random()*4)];
-        h.style.left = Math.random() * (container.clientWidth - 30) + 'px';
-        h.style.top = '0px';
-        container.appendChild(h);
+  let heartDrop = setInterval(() => {
+    if(!cActive) { clearInterval(heartDrop); return; }
+    const h = document.createElement('div');
+    h.className = 'falling-heart'; h.innerText = '❤️';
+    h.style.left = Math.random() * (container.clientWidth - 40) + 'px';
+    h.style.top = '-50px'; container.appendChild(h);
 
-        let fall = setInterval(() => {
-            let top = parseInt(h.style.top);
-            if(top > container.clientHeight - 60) {
-                let bPos = basket.getBoundingClientRect();
-                let hPos = h.getBoundingClientRect();
-                if(hPos.left < bPos.right && hPos.right > bPos.left) {
-                    catchScore++;
-                    document.getElementById('catch-score').innerText = `Score: ${catchScore}/10`;
-                    h.remove(); clearInterval(fall);
-                    if(catchScore >= 10) { catchActive = false; document.getElementById('game-catch').style.display='none'; initMemory(); }
-                }
-            }
-            if(top > container.clientHeight) { h.remove(); clearInterval(fall); }
-            h.style.top = (top + 5) + 'px';
-        }, 30);
-    }, 800);
-}
-
-// MEMORY MATCH
-let cards = ['💖','💖','🎁','🎁','🎂','🎂','💎','💎','🌹','🌹','⭐','⭐'];
-let flippedCards = []; let matched = 0;
-function initMemory() {
-    document.getElementById('game-memory').classList.remove('hidden');
-    let grid = document.getElementById('memory-grid');
-    cards.sort(() => Math.random() - 0.5);
-    cards.forEach(emoji => {
-        let c = document.createElement('div');
-        c.className = 'card'; c.dataset.emoji = emoji; c.innerText = '?';
-        c.onclick = () => {
-            if(flippedCards.length < 2 && !c.classList.contains('flipped')) {
-                c.classList.add('flipped'); c.innerText = emoji; flippedCards.push(c);
-                if(flippedCards.length === 2) {
-                    setTimeout(() => {
-                        if(flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
-                            matched++; if(matched === 6) { document.getElementById('game-memory').style.display='none'; initMaze(); }
-                        } else { flippedCards.forEach(x => { x.classList.remove('flipped'); x.innerText = '?'; }); }
-                        flippedCards = [];
-                    }, 600);
-                }
-            }
-        };
-        grid.appendChild(c);
-    });
-}
-
-// MAZE RUN
-function initMaze() {
-    document.getElementById('game-maze').classList.remove('hidden');
-    const p = document.getElementById('player'); const m = document.getElementById('maze-container');
-    const move = (e) => {
-        let r = m.getBoundingClientRect();
-        let x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left - 15;
-        let y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top - 15;
-        if(x > 0 && x < 270 && y > 0 && y < 270) {
-            p.style.left = x + 'px'; p.style.top = y + 'px';
-            let pr = p.getBoundingClientRect(), gr = document.getElementById('goal').getBoundingClientRect();
-            if(!(pr.right < gr.left || pr.left > gr.right || pr.bottom < gr.top || pr.top > gr.bottom)) {
-                document.getElementById('game-maze').style.display='none';
-                document.getElementById('final-screen').classList.remove('hidden');
-            }
+    let fall = setInterval(() => {
+      let top = parseInt(h.style.top);
+      if(top > container.clientHeight - 80) {
+        let bPos = basket.getBoundingClientRect();
+        let hPos = h.getBoundingClientRect();
+        if(hPos.left < bPos.right && hPos.right > bPos.left) {
+          cScore++; document.getElementById('catch-score').innerText = `Score: ${cScore}/10`;
+          h.remove(); clearInterval(fall);
+          if(cScore >= 10) { cActive=false; document.getElementById('game-catch').style.display='none'; initMem(); }
         }
+      }
+      if(top > container.clientHeight) { h.remove(); clearInterval(fall); }
+      h.style.top = (top + 8) + 'px'; // FAST SPEED
+    }, 20);
+  }, 600);
+}
+
+// 2. MEMORY FLIP - 3D TEXTURE
+function initMem() {
+  document.getElementById('game-memory').classList.remove('hidden');
+  let grid = document.getElementById('memory-grid');
+  let items = ['💖','💖','🎁','🎁','🎂','🎂','💎','💎','🌹','🌹','⭐','⭐'].sort(()=>Math.random()-0.5);
+  let flipped = []; let matched = 0;
+
+  items.forEach(emoji => {
+    let card = document.createElement('div'); card.className = 'card';
+    card.innerHTML = `<div class="card-front">?</div><div class="card-back">${emoji}</div>`;
+    card.onclick = () => {
+      if(flipped.length < 2 && !card.classList.contains('flipped')) {
+        card.classList.add('flipped'); flipped.push(card);
+        if(flipped.length === 2) {
+          setTimeout(() => {
+            if(flipped[0].querySelector('.card-back').innerText === flipped[1].querySelector('.card-back').innerText) {
+              matched++; if(matched === 6) { document.getElementById('game-memory').style.display='none'; initMaze(); }
+            } else { flipped.forEach(c => c.classList.remove('flipped')); }
+            flipped = [];
+          }, 700);
+        }
+      }
     };
-    p.ontouchstart = p.onmousedown = (e) => { e.preventDefault(); m.addEventListener('mousemove', move); m.addEventListener('touchmove', move); };
-    window.onmouseup = window.ontouchend = () => { m.removeEventListener('mousemove', move); m.removeEventListener('touchmove', move); };
+    grid.appendChild(card);
+  });
+}
+
+// 3. MAZE
+function initMaze() {
+  document.getElementById('game-maze').classList.remove('hidden');
+  const p = document.getElementById('player'); const m = document.getElementById('maze-container');
+  const moveMaze = (e) => {
+    let r = m.getBoundingClientRect();
+    let x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left - 15;
+    let y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top - 15;
+    if(x > 0 && x < 270 && y > 0 && y < 270) {
+      p.style.left = x + 'px'; p.style.top = y + 'px';
+      let pr = p.getBoundingClientRect(), gr = document.getElementById('goal').getBoundingClientRect();
+      if(!(pr.right < gr.left || pr.left > gr.right || pr.bottom < gr.top || pr.top > gr.bottom)) {
+        document.getElementById('game-maze').style.display='none'; document.getElementById('final-screen').classList.remove('hidden');
+      }
+    }
+  };
+  p.onmousedown = p.ontouchstart = (e) => { e.preventDefault(); m.addEventListener('mousemove', moveMaze); m.addEventListener('touchmove', moveMaze); };
+  window.onmouseup = window.ontouchend = () => { m.removeEventListener('mousemove', moveMaze); m.removeEventListener('touchmove', moveMaze); };
 }
 
 function openEnvelope() { document.getElementById('envelope').classList.add('open'); }
+
 setInterval(()=>{
-  let h = document.createElement('div'); h.className='heart';
+  let h = document.createElement('div'); h.className='heart-bg';
   h.style.left = Math.random()*window.innerWidth+'px'; h.style.bottom = "-20px";
   document.body.appendChild(h); setTimeout(()=>h.remove(),4000);
 },600);
