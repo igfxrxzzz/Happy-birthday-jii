@@ -61,19 +61,27 @@
   .maze-wall { position: absolute; background: #eee; border-radius: 10px; }
   #player { position: absolute; width: 32px; height: 32px; background: var(--primary); border-radius: 50%; top: 5px; left: 5px; z-index: 10; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.4); }
 
-  /* Final Envelope & Letter */
-  .envelope-wrapper { position: relative; width: 320px; height: 180px; background: var(--primary); margin: 50px auto; cursor: pointer; border-radius: 0 0 15px 15px; }
+  /* Final Envelope & Fixed Middle Letter */
+  .envelope-wrapper { position: relative; width: 320px; height: 180px; background: var(--primary); margin: 100px auto 50px auto; cursor: pointer; border-radius: 0 0 15px 15px; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
+  
   .letter { 
-    position: absolute; bottom: 5px; left: 10px; width: 300px; height: 160px; 
-    background: white; padding: 20px; box-sizing: border-box; transition: 0.7s; 
-    z-index: 2; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    text-align: left; overflow: hidden;
+    position: absolute; bottom: 10px; left: 10px; width: 300px; height: 160px; 
+    background: white; padding: 20px; box-sizing: border-box; transition: 0.7s ease-in-out; 
+    z-index: 2; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: left; overflow-y: auto; opacity: 0; visibility: hidden;
   }
-  .envelope-wrapper.open .letter { transform: translateY(-160px); height: 260px; }
-  .letter h3 { color: var(--primary); margin-top: 0; font-size: 18px; }
-  .letter p { font-size: 14px; line-height: 1.6; color: #444; margin: 5px 0; }
+  /* Letter pops up to middle position and stays there */
+  .envelope-wrapper.open .letter { 
+    transform: translateY(-110px); 
+    height: 280px; 
+    opacity: 1; 
+    visibility: visible;
+  }
+  
+  .letter h3 { color: var(--primary); margin-top: 0; font-size: 18px; text-align: center; }
+  .letter p { font-size: 14px; line-height: 1.5; color: #444; margin: 10px 0; }
 </style>
 </head>
 <body>
@@ -121,15 +129,13 @@
         <p>I’m genuinely proud of the man you are becoming.</p>
         <p>May you grow wiser, stronger, calmer this year.</p>
         <p>And if life ever feels heavy… remember, you’re never as alone as you think. ✨</p>
-        <p style="margin-top:15px; font-weight:bold; color:var(--primary);">Still yours... forever. 🔥</p>
+        <p>And yes… I’ll always be silently rooting for you. 🤍</p>
+        <p>Happy birthday once again mere jigar ka tukda ❤️🤧</p>
+        <p style="margin-top:15px; font-weight:bold; color:var(--primary); text-align:center;">Still yours... forever. 🔥</p>
       </div>
     </div>
   </div>
 </div>
-
-<audio id="bgmusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 let quizData = [
@@ -143,7 +149,6 @@ function checkPassword() {
   if(document.getElementById('passInput').value.toLowerCase().trim() === "still yours") {
     document.getElementById('password-screen').classList.add('hidden');
     document.getElementById('question-box').classList.remove('hidden');
-    document.getElementById('bgmusic').play();
     showQuestion();
   }
 }
@@ -165,7 +170,7 @@ function showQuestion(){
   });
 }
 
-// CATCH GAME - FASTEST
+// CATCH GAME
 let cScore = 0; let cActive = false;
 function startCatch() {
   document.getElementById('game-catch').classList.remove('hidden');
@@ -205,7 +210,7 @@ function startCatch() {
   }, 500);
 }
 
-// MEMORY - BOUNCY 3D
+// MEMORY
 function initMem() {
   document.getElementById('game-memory').classList.remove('hidden');
   let grid = document.getElementById('memory-grid');
@@ -232,7 +237,7 @@ function initMem() {
   });
 }
 
-// MAZE RUN
+// MAZE
 function initMaze() {
   document.getElementById('game-maze').classList.remove('hidden');
   const p = document.getElementById('player'); const m = document.getElementById('maze-container');
