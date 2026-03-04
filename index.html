@@ -32,7 +32,7 @@
   button:active { transform: scale(0.95); }
   .hidden { display: none; }
 
-  /* 1. Catch the Heart - Pro Speed */
+  /* Catch the Heart Game */
   #game-catch-container { 
     position: relative; width: 95%; max-width: 400px; height: 450px; 
     background: #fdfdfd; border-radius: 20px; border: 2px solid #f0f0f0;
@@ -41,7 +41,7 @@
   #basket { position: absolute; bottom: 15px; left: 50%; font-size: 55px; transform: translateX(-50%); z-index: 10; transition: left 0.05s linear; }
   .falling-heart { position: absolute; font-size: 35px; z-index: 5; will-change: transform; }
 
-  /* 2. Memory Flip - Springy 3D */
+  /* Memory Flip Game */
   .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 350px; margin: 20px auto; perspective: 1200px; }
   .card { 
     width: 100px; height: 100px; cursor: pointer; position: relative; 
@@ -56,17 +56,24 @@
   .card-front { background: #fff; color: var(--primary); font-size: 40px; }
   .card-back { background: var(--primary); color: white; font-size: 40px; transform: rotateY(180deg); }
 
-  /* 3. Maze Smooth */
+  /* Maze Run */
   #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 4px solid #f0f0f0; border-radius: 15px; }
   .maze-wall { position: absolute; background: #eee; border-radius: 10px; }
   #player { position: absolute; width: 32px; height: 32px; background: var(--primary); border-radius: 50%; top: 5px; left: 5px; z-index: 10; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.4); }
 
-  /* Final Envelope */
-  .envelope-wrapper { position: relative; width: 300px; height: 180px; background: var(--primary); margin: 50px auto; cursor: pointer; border-radius: 0 0 15px 15px; }
-  .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
+  /* Final Envelope & Letter */
+  .envelope-wrapper { position: relative; width: 320px; height: 180px; background: var(--primary); margin: 50px auto; cursor: pointer; border-radius: 0 0 15px 15px; }
+  .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
-  .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 160px; background: white; padding: 25px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-  .envelope-wrapper.open .letter { transform: translateY(-130px); height: 220px; }
+  .letter { 
+    position: absolute; bottom: 5px; left: 10px; width: 300px; height: 160px; 
+    background: white; padding: 20px; box-sizing: border-box; transition: 0.7s; 
+    z-index: 2; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: left; overflow: hidden;
+  }
+  .envelope-wrapper.open .letter { transform: translateY(-160px); height: 260px; }
+  .letter h3 { color: var(--primary); margin-top: 0; font-size: 18px; }
+  .letter p { font-size: 14px; line-height: 1.6; color: #444; margin: 5px 0; }
 </style>
 </head>
 <body>
@@ -110,14 +117,19 @@
     <h1>Happy Birthday 🤍</h1>
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
-        <h3 style="color: var(--primary); margin: 0 0 10px 0;">My Message 💌</h3>
-        <p style="font-size: 15px; line-height: 1.6;">my jigar… You mean the world to me. I cherish us. <br><br><b>Still yours… forever. 🔥</b></p>
+        <h3>Happy Birthday 🤍</h3>
+        <p>I’m genuinely proud of the man you are becoming.</p>
+        <p>May you grow wiser, stronger, calmer this year.</p>
+        <p>And if life ever feels heavy… remember, you’re never as alone as you think. ✨</p>
+        <p style="margin-top:15px; font-weight:bold; color:var(--primary);">Still yours... forever. 🔥</p>
       </div>
     </div>
   </div>
 </div>
 
-<audio id="bgmusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
+<audio id="bgmusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 let quizData = [
@@ -153,7 +165,7 @@ function showQuestion(){
   });
 }
 
-// CATCH GAME - SUPER FAST
+// CATCH GAME - FASTEST
 let cScore = 0; let cActive = false;
 function startCatch() {
   document.getElementById('game-catch').classList.remove('hidden');
@@ -188,7 +200,7 @@ function startCatch() {
         }
       }
       if(top > container.clientHeight) { h.remove(); clearInterval(fall); }
-      h.style.top = (top + 10) + 'px'; // FASTEST SPEED
+      h.style.top = (top + 10) + 'px';
     }, 16);
   }, 500);
 }
@@ -220,7 +232,7 @@ function initMem() {
   });
 }
 
-// MAZE
+// MAZE RUN
 function initMaze() {
   document.getElementById('game-maze').classList.remove('hidden');
   const p = document.getElementById('player'); const m = document.getElementById('maze-container');
