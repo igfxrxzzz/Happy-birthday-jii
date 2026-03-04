@@ -40,7 +40,7 @@
   @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
   
   /* Dropping Balloon Animation */
-  .dropping-balloon { position: absolute; cursor: pointer; font-size: 40px; z-index: 100; animation: drop 4s linear forwards; }
+  .dropping-balloon { position: absolute; cursor: pointer; font-size: 50px; z-index: 999; animation: drop 4s linear forwards; pointer-events: auto; }
   @keyframes drop {
     0% { transform: translateY(-100px); opacity: 1; }
     100% { transform: translateY(110vh); opacity: 1; }
@@ -89,7 +89,7 @@
     <h1>Final Mission! 🎮</h1>
     <p>Catch 5 falling balloons to see my message!</p>
     <h2 id="score-board">Score: 0/5</h2>
-    <button onclick="startGame()">Start Catching</button>
+    <button id="start-btn" onclick="startGame()">Start Catching</button>
   </div>
 
   <div id="final-screen" class="hidden">
@@ -172,7 +172,7 @@ function showQuestion(){
 }
 
 function startGame() {
-    document.getElementById('game-intro').querySelector('button').style.display = 'none';
+    document.getElementById('start-btn').style.display = 'none';
     gameActive = true;
     spawnBalloon();
 }
@@ -185,7 +185,12 @@ function spawnBalloon() {
     balloon.innerText = ['🎈', '💖', '🎁', '🎂'][Math.floor(Math.random()*4)];
     balloon.style.left = Math.random() * (window.innerWidth - 60) + 'px';
     
-    balloon.onclick = () => {
+    // Improved Click Handler
+    balloon.addEventListener('mousedown', catchBalloon);
+    balloon.addEventListener('touchstart', catchBalloon);
+    
+    function catchBalloon(e) {
+        e.preventDefault();
         gameScore++;
         document.getElementById('score-board').innerText = `Score: ${gameScore}/5`;
         balloon.remove();
@@ -196,11 +201,11 @@ function spawnBalloon() {
         } else {
             spawnBalloon();
         }
-    };
+    }
     
     document.body.appendChild(balloon);
     
-    // If balloon falls without being clicked
+    // Auto-remove and re-spawn if missed
     setTimeout(() => {
         if(balloon.parentNode) {
             balloon.remove();
