@@ -24,14 +24,15 @@
     background: rgba(255,255,255,0.1); color: white; font-size: 16px;
   }
   button {
-    padding:14px 30px; font-size:16px; border:none; border-radius:30px; 
-    background:#ff4d6d; color:white; cursor:pointer; margin: 8px; 
+    padding: 14px 30px; font-size: 16px; border: none; border-radius: 30px; 
+    background: #ff4d6d; color: white; cursor: pointer; margin: 8px; 
     font-weight: 600; transition: 0.4s; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
   }
   button:hover {background:#ff1e4d; transform: scale(1.05);}
   
   .hidden {display:none; margin-top:30px;}
   
+  /* Floating Hearts Background */
   .heart {position:absolute; width:20px; height:20px; background:rgba(255, 77, 109, 0.7); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
   .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
   .heart:before {top:-10px; left:0;}
@@ -40,6 +41,7 @@
   
   #game-balloon { position: absolute; cursor: pointer; font-size: 45px; transition: 0.1s; z-index: 100; display: none; filter: drop-shadow(0 0 15px #ff4d6d); }
 
+  /* Envelope & Letter Styling */
   .envelope-wrapper { position: relative; width: 300px; height: 190px; background: #ff4d6d; margin: 60px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; transition: 0.5s; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 110px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
@@ -47,14 +49,15 @@
   .letter { position: absolute; bottom: 5px; left: 10px; width: 280px; height: 170px; background: white; color: #333; padding: 25px; box-sizing: border-box; transition: 0.7s; z-index: 2; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.4); }
   .envelope-wrapper.open .letter { transform: translateY(-140px); height: 260px; }
 
+  /* Error/Shake Effect */
   .shake { animation: shake 0.4s; }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
   
   .confetti { position: fixed; width: 10px; height: 10px; top: -10px; z-index: 10; animation: fall 3.5s linear forwards; }
   @keyframes fall { to { transform: translateY(100vh) rotate(540deg); } }
 
-  .restart-btn { background: transparent; border: 2px solid white; margin-top: 50px; font-size: 14px; opacity: 0.7; }
-  .restart-btn:hover { background: white; color: black; opacity: 1; }
+  .restart-btn { background: transparent; border: 2px solid white; margin-top: 30px; font-size: 14px; opacity: 0.8; }
+  .restart-btn:hover { background: white; color: #1e1e2f; opacity: 1; }
 </style>
 </head>
 <body>
@@ -64,35 +67,35 @@
 <div class="box" id="main-content">
   <div id="password-screen">
     <h1 style="color: #ff4d6d; font-size: 2.2rem;">Still Yours? 🔒</h1>
-    <p>Please enter the secret code to proceed:</p>
-    <input type="password" id="passInput" placeholder="Password...">
+    <p>Unlock your birthday surprise:</p>
+    <input type="password" id="passInput" placeholder="Password yahan likho...">
     <br>
     <button onclick="checkPassword()">Unlock 🔓</button>
-    <p id="error-msg" style="color: #ff4d6d; display: none; font-weight: 600;">Incorrect! Try again. 😉</p>
+    <p id="error-msg" style="color: #ff4d6d; display: none; font-weight: 600; margin-top: 10px;">Incorrect Code! Try again. 😉</p>
   </div>
 
   <div id="quiz-start-screen" class="hidden">
     <h1 style="font-size: 2rem;">Wishes Loading... ⏳</h1>
-    <p>Complete the quiz with correct answers to unlock!</p>
+    <p>Complete the tricky quiz to proceed!</p>
     <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
   <div id="question-box" class="hidden">
     <p id="qtext" style="font-size: 24px; font-weight: 600; min-height: 80px;"></p>
     <div id="options"></div>
-    <p id="quiz-error" style="color: #ff4d6d; display: none; margin-top: 10px;">Wrong Choice! Think again. 🧐</p>
+    <p id="quiz-error" style="color: #ff4d6d; display: none; margin-top: 15px; font-weight: bold;">Oops! Wrong Choice. Try again! 🧐</p>
   </div>
 
   <div id="game-intro" class="hidden">
-    <h1>Final Barrier 🎮</h1>
+    <h1>Final Level 🎮</h1>
     <p>Catch the birthday balloon 5 times!</p>
     <h2 id="score-board" style="color: #f2d74e;">Score: 0/5</h2>
-    <button onclick="startGame()">I'm Ready</button>
+    <button onclick="startGame()">Play Game</button>
   </div>
 
   <div id="final-screen" class="hidden">
     <h1 id="final-title" style="font-size: 2rem; color: #ff4d6d;">Success! 🏆</h1>
-    <p>Open your birthday letter below:</p>
+    <p>Tap the envelope to read your letter:</p>
     
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
@@ -114,25 +117,27 @@
 </audio>
 
 <script>
+// Quiz Data with Correct Answers
 let quizData = [
-  { q: "Guess who sent this? 😏", options: ["A Ghost 👻", "Someone Random", "Only Me", "Wrong Person"], answer: "Only Me" },
-  { q: "Is today a special day? 🌟", options: ["No", "Maybe", "Yes, Birthday!", "Just Monday"], answer: "Yes, Birthday!" },
-  { q: "Ready for the gift? ✨", options: ["Not Yet", "No", "Always Ready!", "Wait.."], answer: "Always Ready!" }
+  { q: "Guess who sent this surprise? 😏", options: ["A Ghost 👻", "Someone Random", "Only Me", "Wrong Person"], answer: "Only Me" },
+  { q: "Is today just a normal day? 🌟", options: ["Yes, Normal", "Maybe", "No, It's My Birthday!", "I forgot"], answer: "No, It's My Birthday!" },
+  { q: "Are you ready for the final surprise? ✨", options: ["Not Yet", "I'm Scared", "YES, 100%!", "Maybe Later"], answer: "YES, 100%!" }
 ];
 let index = 0;
 let gameScore = 0;
 
 function checkPassword() {
   const pass = document.getElementById('passInput').value.toLowerCase().trim();
+  const screen = document.getElementById('password-screen');
   if(pass === "still yours") {
-    document.getElementById('password-screen').style.display = 'none';
+    screen.style.display = 'none';
     document.getElementById('quiz-start-screen').classList.remove('hidden');
-    // Start Love Theme Music
+    // Start Love Theme Song
     document.getElementById('bgmusic').play();
   } else {
-    document.getElementById('password-screen').classList.add('shake');
+    screen.classList.add('shake');
     document.getElementById('error-msg').style.display = 'block';
-    setTimeout(() => document.getElementById('password-screen').classList.remove('shake'), 400);
+    setTimeout(() => screen.classList.remove('shake'), 400);
   }
 }
 
@@ -161,6 +166,7 @@ function showQuestion(){
                 document.getElementById('game-intro').classList.remove('hidden');
             }
         } else {
+            // Shake effect for wrong answers
             document.getElementById('question-box').classList.add('shake');
             document.getElementById('quiz-error').style.display = 'block';
             setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 400);
@@ -198,10 +204,8 @@ function openEnvelope() {
     const env = document.getElementById('envelope');
     if(!env.classList.contains('open')) {
         env.classList.add('open');
-        document.getElementById('final-title').innerText = "Wishes Just For You! 🎂";
+        document.getElementById('final-title').innerText = "Special Wishes For You! 🎂";
         createConfetti();
-        // Slightly increase volume for final reveal
-        document.getElementById('bgmusic').volume = 0.9;
     }
 }
 
@@ -221,6 +225,7 @@ function createConfetti() {
   }
 }
 
+// Background Heart Animation
 setInterval(()=>{
   let h = document.createElement('div');
   h.className='heart';
