@@ -15,7 +15,7 @@
     user-select: none;
     min-height: 100vh;
   }
-  .box {margin-top:50px; padding: 20px;}
+  .box {margin-top:80px; padding: 20px;}
   h1, h2 {color: #d63384;}
   
   input {
@@ -29,31 +29,32 @@
     transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
   button:hover {background:#ff1e4d; transform: scale(1.05);}
-  .hidden {display:none;}
-
+  
+  .hidden {display:none; margin-top:30px;}
+  
   /* Floating Hearts Background */
   .heart {position:absolute; width:20px; height:20px; background:rgba(255, 0, 0, 0.4); transform:rotate(45deg); animation: float 4s linear infinite; z-index: -1;}
   .heart:after, .heart:before {content:""; position:absolute; width:20px; height:20px; background:inherit; border-radius:50%;}
   .heart:before {top:-10px; left:0;}
   .heart:after {left:10px; top:0;}
   @keyframes float {0%{transform: translateY(0) rotate(45deg); opacity:1;} 100%{transform: translateY(-900px) rotate(45deg); opacity:0;}}
-
-  /* Game 1: Balloons */
+  
+  /* Dropping Balloon Animation */
   .dropping-balloon { position: absolute; cursor: pointer; font-size: 50px; z-index: 999; animation: drop 4s linear forwards; pointer-events: auto; }
-  @keyframes drop { 0% { transform: translateY(-100px); } 100% { transform: translateY(110vh); } }
+  @keyframes drop { 0% { transform: translateY(-100px); opacity: 1; } 100% { transform: translateY(110vh); opacity: 1; } }
 
-  /* Game 2: Memory Match (12 Cards) */
-  .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
-  .card { width: 80px; height: 80px; background: #ff4d6d; color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; border-radius: 10px; cursor: pointer; transform-style: preserve-3d; transition: 0.3s; }
+  /* Memory Game Style */
+  .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 320px; margin: 20px auto; }
+  .card { width: 90px; height: 90px; background: #ff4d6d; color: #ff4d6d; display: flex; align-items: center; justify-content: center; font-size: 35px; border-radius: 15px; cursor: pointer; transition: 0.3s; border: 2px solid white; }
   .card.flipped { background: white; color: black; transform: rotateY(180deg); }
 
-  /* Game 4: Maze */
-  #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 5px solid #ff4d6d; touch-action: none; }
+  /* Maze Game Style */
+  #maze-container { position: relative; width: 300px; height: 300px; background: #fff; margin: 20px auto; border: 5px solid #ff4d6d; touch-action: none; border-radius: 10px; overflow: hidden; }
   .maze-wall { position: absolute; background: #ff4d6d; }
-  #player { position: absolute; width: 25px; height: 25px; background: #d63384; border-radius: 50%; top: 5px; left: 5px; z-index: 10; }
-  #goal { position: absolute; width: 30px; height: 30px; bottom: 5px; right: 5px; font-size: 25px; }
+  #player { position: absolute; width: 30px; height: 30px; background: #d63384; border-radius: 50%; top: 5px; left: 5px; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.2); cursor: grab; }
+  #goal { position: absolute; width: 35px; height: 35px; bottom: 5px; right: 5px; font-size: 30px; }
 
-  /* Envelope */
+  /* Envelope & Letter */
   .envelope-wrapper { position: relative; width: 300px; height: 180px; background: #ff4d6d; margin: 50px auto; cursor: pointer; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
@@ -62,6 +63,8 @@
 
   .shake { animation: shake 0.4s; }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+  .confetti { position: fixed; width: 8px; height: 8px; top: -10px; z-index: 1000; animation: fall 3s linear forwards; border-radius: 50%; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -77,29 +80,30 @@
   <div id="question-box" class="hidden">
     <p id="qtext" style="font-size: 22px; font-weight: bold;"></p>
     <div id="options"></div>
+    <p id="quiz-error" style="color: red; display: none; margin-top: 10px;">Arre! Sahi wala choose karo. 🧐</p>
   </div>
 
   <div id="game-balloon" class="hidden">
     <h1>Mission 1: Catch 5 Balloons! 🎈</h1>
     <h2 id="score-balloon">Score: 0/5</h2>
-    <button id="start-balloon-btn" onclick="startBalloons()">Start</button>
+    <button id="start-btn" onclick="startBalloons()">Start Catching</button>
   </div>
 
   <div id="game-memory" class="hidden">
-    <h1>Mission 2: Match the Pairs! 🧩</h1>
-    <p>Find all 6 pairs (12 cards)</p>
+    <h1>Mission 2: Memory Match! 🧩</h1>
+    <p>Find all 6 pairs</p>
     <div class="memory-grid" id="memory-grid"></div>
   </div>
 
   <div id="game-maze" class="hidden">
-    <h1>Final Mission: Reach the Cake! 🎂</h1>
-    <p>Drag the pink dot to the cake!</p>
+    <h1>Final Mission: Maze Run! 🎂</h1>
+    <p>Drag the dot to the cake!</p>
     <div id="maze-container">
         <div id="player"></div>
         <div id="goal">🎂</div>
-        <div class="maze-wall" style="top:50px; left:0; width:200px; height:10px;"></div>
-        <div class="maze-wall" style="top:120px; right:0; width:200px; height:10px;"></div>
-        <div class="maze-wall" style="top:200px; left:0; width:200px; height:10px;"></div>
+        <div class="maze-wall" style="top:70px; left:0; width:220px; height:12px;"></div>
+        <div class="maze-wall" style="top:150px; right:0; width:220px; height:12px;"></div>
+        <div class="maze-wall" style="top:230px; left:0; width:220px; height:12px;"></div>
     </div>
   </div>
 
@@ -108,10 +112,13 @@
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
         <h3 style="color: #ff4d6d; margin: 0;">For You 💌</h3>
-        <p>my jigar… You mean the world to me. <br><br><b>Still yours… forever. 🔥</b></p>
+        <p style="font-size: 14px; line-height: 1.5;">
+          my jigar… You mean the world to me. I cherish every moment with you. 💖 <br><br>
+          <b>Still yours… forever. 🔥🔥🔥</b>
+        </p>
       </div>
     </div>
-    <button onclick="location.reload()">Restart ↺</button>
+    <br><button onclick="location.reload()" style="background:#6c757d;">Restart ↺</button>
   </div>
 </div>
 
@@ -119,12 +126,12 @@
 
 <script>
 let quizData = [
-  { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours"], answer: "Forever yours" },
-  { q: "Ready for your surprise? ✨", options: ["Yes!", "Absolutely"], answer: "Yes!" }
+  { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours", "A Stranger 👻"], correct: ["Your love", "Only me", "Forever yours"] },
+  { q: "How much do you miss me right now? 💖", options: ["A lot", "Just a little", "Can't wait to see you", "Forever", "Not at all 😜"], correct: ["A lot", "Just a little", "Can't wait to see you", "Forever"] },
+  { q: "Ready for a big hug in your heart? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], correct: ["Yes!", "Absolutely", "Only you", "Forever mine"] }
 ];
-let qIdx = 0;
+let qIndex = 0;
 
-// Password Logic
 function checkPassword() {
   if(document.getElementById('passInput').value.toLowerCase().trim() === "still yours") {
     document.getElementById('password-screen').style.display = 'none';
@@ -136,134 +143,112 @@ function checkPassword() {
   }
 }
 
-// Quiz Logic
 function showQuestion(){
-  let q = quizData[qIdx];
+  let q = quizData[qIndex];
   document.getElementById('qtext').innerText = q.q;
   let optsDiv = document.getElementById('options');
   optsDiv.innerHTML = "";
+  document.getElementById('quiz-error').style.display = 'none';
   q.options.forEach(opt => {
     let btn = document.createElement('button');
     btn.innerText = opt;
     btn.onclick = () => {
-        if(opt === q.answer) {
-            qIdx++;
-            if(qIdx < quizData.length) showQuestion();
+        if(q.correct.includes(opt)) {
+            qIndex++;
+            if(qIndex < quizData.length) showQuestion();
             else { document.getElementById('question-box').style.display='none'; document.getElementById('game-balloon').classList.remove('hidden'); }
+        } else {
+            document.getElementById('quiz-error').style.display = 'block';
         }
     };
     optsDiv.appendChild(btn);
   });
 }
 
-// 1. Balloon Game
-let bScore = 0;
-function startBalloons() {
-    document.getElementById('start-balloon-btn').style.display='none';
-    spawnB();
-}
+// BALLOON GAME
+let bScore = 0; let bActive = false;
+function startBalloons() { document.getElementById('start-btn').style.display = 'none'; bActive = true; spawnB(); }
 function spawnB() {
-    if(bScore >= 5) { 
-        document.getElementById('game-balloon').style.display='none'; 
-        startMemoryGame(); 
-        return; 
-    }
+    if(!bActive) return;
     const b = document.createElement('div');
     b.className = 'dropping-balloon';
-    b.innerText = '🎈';
+    b.innerText = ['🎈', '💖', '🎁', '🎂'][Math.floor(Math.random()*4)];
     b.style.left = Math.random() * (window.innerWidth - 60) + 'px';
     b.onmousedown = b.ontouchstart = (e) => {
         e.preventDefault(); bScore++;
         document.getElementById('score-balloon').innerText = `Score: ${bScore}/5`;
-        b.remove(); spawnB();
+        b.remove();
+        if(bScore >= 5) { bActive = false; document.getElementById('game-balloon').style.display='none'; initMemory(); }
+        else { spawnB(); }
     };
     document.body.appendChild(b);
-    setTimeout(() => { if(b.parentNode) { b.remove(); spawnB(); } }, 3500);
+    setTimeout(() => { if(b.parentNode) { b.remove(); if(bActive) spawnB(); } }, 4000);
 }
 
-// 2. Memory Game (12 Cards)
+// MEMORY MATCH
 let cards = ['💖','💖','🎁','🎁','🎂','🎂','💎','💎','🌹','🌹','⭐','⭐'];
-let flippedCards = [];
-let matchedPairs = 0;
-
-function startMemoryGame() {
+let flipped = []; let matched = 0;
+function initMemory() {
     document.getElementById('game-memory').classList.remove('hidden');
     let grid = document.getElementById('memory-grid');
     cards.sort(() => Math.random() - 0.5);
-    cards.forEach((emoji, i) => {
-        let card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.emoji = emoji;
-        card.innerText = '?';
-        card.onclick = () => flipCard(card);
-        grid.appendChild(card);
+    cards.forEach(emoji => {
+        let c = document.createElement('div');
+        c.className = 'card'; c.dataset.emoji = emoji; c.innerText = '?';
+        c.onclick = () => {
+            if(flipped.length < 2 && !c.classList.contains('flipped')) {
+                c.classList.add('flipped'); c.innerText = emoji; flipped.push(c);
+                if(flipped.length === 2) {
+                    setTimeout(() => {
+                        if(flipped[0].dataset.emoji === flipped[1].dataset.emoji) {
+                            matched++; if(matched === 6) { document.getElementById('game-memory').style.display='none'; initMaze(); }
+                        } else { flipped.forEach(x => { x.classList.remove('flipped'); x.innerText = '?'; }); }
+                        flipped = [];
+                    }, 600);
+                }
+            }
+        };
+        grid.appendChild(c);
     });
 }
 
-function flipCard(card) {
-    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-        card.classList.add('flipped');
-        card.innerText = card.dataset.emoji;
-        flippedCards.push(card);
-        if (flippedCards.length === 2) {
-            setTimeout(checkMatch, 700);
-        }
-    }
-}
-
-function checkMatch() {
-    if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
-        matchedPairs++;
-        if (matchedPairs === 6) {
-            document.getElementById('game-memory').style.display='none';
-            document.getElementById('game-maze').classList.remove('hidden');
-            initMaze();
-        }
-    } else {
-        flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = '?'; });
-    }
-    flippedCards = [];
-}
-
-// 4. Maze Game
+// MAZE
 function initMaze() {
-    const player = document.getElementById('player');
-    const container = document.getElementById('maze-container');
-    const goal = document.getElementById('goal');
-    
-    player.onmousedown = player.ontouchstart = (e) => {
-        const move = (event) => {
-            let clientX = event.touches ? event.touches[0].clientX : event.clientX;
-            let clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            let rect = container.getBoundingClientRect();
-            let x = clientX - rect.left - 12;
-            let y = clientY - rect.top - 12;
-            
-            // Boundary & Wall collision (Simplified)
-            if(x > 0 && x < 275 && y > 0 && y < 275) {
-                player.style.left = x + 'px';
-                player.style.top = y + 'px';
-            }
-            
-            // Check Win
-            let pRect = player.getBoundingClientRect();
-            let gRect = goal.getBoundingClientRect();
-            if(!(pRect.right < gRect.left || pRect.left > gRect.right || pRect.bottom < gRect.top || pRect.top > gRect.bottom)) {
+    document.getElementById('game-maze').classList.remove('hidden');
+    const p = document.getElementById('player'); const g = document.getElementById('goal'); const c = document.getElementById('maze-container');
+    const move = (e) => {
+        let cx = e.touches ? e.touches[0].clientX : e.clientX;
+        let cy = e.touches ? e.touches[0].clientY : e.clientY;
+        let r = c.getBoundingClientRect();
+        let x = cx - r.left - 15; let y = cy - r.top - 15;
+        if(x > 0 && x < 270 && y > 0 && y < 270) {
+            p.style.left = x + 'px'; p.style.top = y + 'px';
+            let pr = p.getBoundingClientRect(), gr = g.getBoundingClientRect();
+            if(!(pr.right < gr.left || pr.left > gr.right || pr.bottom < gr.top || pr.top > gr.bottom)) {
                 document.getElementById('game-maze').style.display='none';
                 document.getElementById('final-screen').classList.remove('hidden');
-                window.removeEventListener('mousemove', move);
-                window.removeEventListener('touchmove', move);
+                c.removeEventListener('mousemove', move); c.removeEventListener('touchmove', move);
             }
-        };
-        window.addEventListener('mousemove', move);
-        window.addEventListener('touchmove', move);
-        window.onmouseup = window.ontouchend = () => { window.removeEventListener('mousemove', move); window.removeEventListener('touchmove', move); };
+        }
     };
+    p.onmousedown = p.ontouchstart = (e) => { e.preventDefault(); c.addEventListener('mousemove', move); c.addEventListener('touchmove', move); };
+    window.onmouseup = window.ontouchend = () => { c.removeEventListener('mousemove', move); c.removeEventListener('touchmove', move); };
 }
 
-function openEnvelope() { document.getElementById('envelope').classList.add('open'); }
+function openEnvelope() { 
+    if(!document.getElementById('envelope').classList.contains('open')) {
+        document.getElementById('envelope').classList.add('open');
+        for(let i=0; i<50; i++) {
+            let conf = document.createElement('div');
+            conf.className = 'confetti';
+            conf.style.left = Math.random() * 100 + 'vw';
+            conf.style.background = ['#ff4d6d','#ff758c','#ffd166'][Math.floor(Math.random()*3)];
+            document.body.appendChild(conf);
+            setTimeout(() => conf.remove(), 3000);
+        }
+    }
+}
 
-// Background Hearts
 setInterval(()=>{
   let h = document.createElement('div'); h.className='heart';
   h.style.left = Math.random()*window.innerWidth+'px'; h.style.bottom = "-20px";
