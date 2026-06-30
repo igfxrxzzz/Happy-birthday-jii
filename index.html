@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Still Yours 💌</title>
+<title>Happy Birthday! 🎈</title>
 <style>
   :root { --primary: #ff4d6d; --text: #333; }
   body {
@@ -61,7 +61,7 @@
   .maze-wall { position: absolute; background: #eee; border-radius: 10px; }
   #player { position: absolute; width: 32px; height: 32px; background: var(--primary); border-radius: 50%; top: 5px; left: 5px; z-index: 10; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.4); }
 
-  /* Final Envelope & Fixed Middle Letter */
+  /* Final Envelope */
   .envelope-wrapper { position: relative; width: 320px; height: 180px; background: var(--primary); margin: 100px auto 50px auto; cursor: pointer; border-radius: 0 0 15px 15px; }
   .envelope-wrapper:before { content: ""; position: absolute; top: 0; left: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 100px solid #ff758c; z-index: 5; transition: 0.5s; transform-origin: top; }
   .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 0; }
@@ -72,13 +72,7 @@
     z-index: 2; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     text-align: left; overflow-y: auto; opacity: 0; visibility: hidden;
   }
-  /* Letter pops up to middle position and stays there */
-  .envelope-wrapper.open .letter { 
-    transform: translateY(-110px); 
-    height: 280px; 
-    opacity: 1; 
-    visibility: visible;
-  }
+  .envelope-wrapper.open .letter { transform: translateY(-110px); height: 280px; opacity: 1; visibility: visible; }
   
   .letter h3 { color: var(--primary); margin-top: 0; font-size: 18px; text-align: center; }
   .letter p { font-size: 14px; line-height: 1.5; color: #444; margin: 10px 0; }
@@ -88,8 +82,8 @@
 
 <div class="box">
   <div id="password-screen">
-    <h1>Security Check 🔒</h1>
-    <input type="password" id="passInput" placeholder="Enter Password...">
+    <h1>Hello! 🎈</h1>
+    <input type="password" id="passInput" placeholder="Enter Birthday Password...">
     <br><button onclick="checkPassword()">Unlock</button>
   </div>
 
@@ -99,7 +93,7 @@
   </div>
 
   <div id="game-catch" class="hidden">
-    <h1>Catch 10 Hearts ❤️</h1>
+    <h1>Catch 10 Balloons 🎈</h1>
     <h2 id="catch-score">0 / 10</h2>
     <div id="game-catch-container">
         <div id="basket">🧺</div>
@@ -122,16 +116,15 @@
   </div>
 
   <div id="final-screen" class="hidden">
-    <h1>Happy Birthday 🤍</h1>
+    <h1>Happy Birthday! 🎂</h1>
     <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
       <div class="letter">
-        <h3>Happy Birthday 🤍</h3>
-        <p>I’m genuinely proud of the man you are becoming.</p>
-        <p>May you grow wiser, stronger, calmer this year.</p>
-        <p>And if life ever feels heavy… remember, you’re never as alone as you think. ✨</p>
-        <p>And yes… I’ll always be silently rooting for you. 🤍</p>
-        <p>Happy birthday once again mere jigar ka tukda ❤️🤧</p>
-        <p style="margin-top:15px; font-weight:bold; color:var(--primary); text-align:center;">Still yours... forever. 🔥</p>
+        <h3>Birthday Message 🎈</h3>
+        <p>Wishing you a very happy birthday!</p>
+        <p>May this year bring you lots of success, happiness, and peace.</p>
+        <p>Keep working hard and stay positive in everything you do. ✨</p>
+        <p>Have an amazing day ahead filled with celebrations.</p>
+        <p style="margin-top:15px; font-weight:bold; color:var(--primary); text-align:center;">Have a great year ahead! 🎂</p>
       </div>
     </div>
   </div>
@@ -139,17 +132,19 @@
 
 <script>
 let quizData = [
-  { q: "Guess who is sending you this surprise? 😏", options: ["Your love", "Someone else", "Only me", "Forever yours", "A Stranger 👻"], answer: "Forever yours" },
-  { q: "How much do you miss me right now? 💖", options: ["A lot", "Just a little", "Can't wait to see you", "Forever", "Not at all 😜"], answer: "A lot" },
-  { q: "Ready for a big hug? ✨", options: ["Yes!", "Absolutely", "Only you", "Forever mine", "No thanks ❌"], answer: "Yes!" }
+  { q: "Aaj kya hai? 🗓️", options: ["Birthday", "Festival", "Normal Day"], answer: "Birthday" },
+  { q: "Party ke liye ready ho? 🎉", options: ["Haan bilkul!", "Nahi"], answer: "Haan bilkul!" },
+  { q: "Birthday cake pasand hai? 🎂", options: ["Bahut jyada", "Thoda thoda"], answer: "Bahut jyada" }
 ];
 let qIdx = 0;
 
 function checkPassword() {
-  if(document.getElementById('passInput').value.toLowerCase().trim() === "still yours") {
+  if(document.getElementById('passInput').value.toLowerCase().trim() === "birthday") {
     document.getElementById('password-screen').classList.add('hidden');
     document.getElementById('question-box').classList.remove('hidden');
     showQuestion();
+  } else {
+    alert("Galat password hai!");
   }
 }
 
@@ -189,7 +184,7 @@ function startCatch() {
   let heartDrop = setInterval(() => {
     if(!cActive) { clearInterval(heartDrop); return; }
     const h = document.createElement('div');
-    h.className = 'falling-heart'; h.innerText = '❤️';
+    h.className = 'falling-heart'; h.innerText = '🎈';
     h.style.left = Math.random() * (container.clientWidth - 40) + 'px';
     h.style.top = '-50px'; container.appendChild(h);
 
@@ -214,7 +209,7 @@ function startCatch() {
 function initMem() {
   document.getElementById('game-memory').classList.remove('hidden');
   let grid = document.getElementById('memory-grid');
-  let items = ['💖','💖','🎁','🎁','🎂','🎂','💎','💎','🌹','🌹','⭐','⭐'].sort(()=>Math.random()-0.5);
+  let items = ['🎈','🎈','🎁','🎁','🎂','🎂','🍰','🍰','🎉','🎉','⭐','⭐'].sort(()=>Math.random()-0.5);
   let flipped = []; let matched = 0;
 
   items.forEach(emoji => {
